@@ -45,6 +45,8 @@ const DeanNavbar = () => {
               src="src/assets/images/placeholder.jpg"
               alt="Profile"
               className="h-16 w-16 rounded-full object-cover"
+              onClick={() => {localStorage.removeItem("user")}}
+
             />
           </div>
         </div>

@@ -23,14 +23,18 @@ import CoordinatorHome from './pages/coordinator/coordinator_home';
 import DeanStudents from './pages/dean/dean_students';
 import DeanReport from './pages/dean/dean_report';
 import DeanNavbar from './components/deanNavbar';
+import SignIn from './pages/Sign_in/SignIn';
+import SignInNavBar from './components/SignInNavBar';
 
 function App() {
-  const [role, setRole] = useState('advisor'); // Dynamically set this role (e.g., after login)
+  const user = JSON.parse(localStorage.getItem('user'));
+  const [role, setRole] = useState(user ? user.role : '');
 
   return (
     <Router>
       <div className='flex flex-col min-h-screen'>
         {/* Render Navbar based on role */}
+        {role === '' && <SignInNavBar />}
         {role === 'student' && <Navbar />}
         {role === 'advisor' && <AdvisorNavbar />}
         {role === 'coordinator' && <CoordinatorNavbar />}
@@ -38,6 +42,12 @@ function App() {
 
         <div className='flex-grow p-20'>
           <Routes>
+            {role === '' && (
+              <>
+                <Route path="/" element={<SignIn setRole={setRole} />} />
+              </>
+            )}
+            
             {/* Routes for student */}
             {role === 'student' && (
               <>

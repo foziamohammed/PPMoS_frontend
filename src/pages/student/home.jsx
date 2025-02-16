@@ -3,6 +3,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
 const Home = () => {
+  const user = JSON.parse(localStorage.getItem('user'))
     return(
         <main className="bg-white w-full">
             <div className='flex gap-40'>
@@ -11,8 +12,8 @@ const Home = () => {
              <div className='flex items-center space-x-10 space-y-10 gap-20 ml-20'>
                 <div className="grid">
                 <img src='src/assets/images/placeholder.jpg' className="h-20 w-20 rounded-full"></img>
-                <p className ='text-blue-500 font-semibold text-lg'>Sara Kebede</p>
-                <p>Phd/5489/16</p>
+                <p className ='text-blue-500 font-semibold text-lg'>{user.name}</p>
+                <p>{user._id}</p>
                 </div>
                 <div className='space-y-6 text-sm'>
                     <p>

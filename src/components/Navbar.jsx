@@ -53,6 +53,7 @@ const Navbar = () => {
               src="src/assets/images/placeholder.jpg"
               alt="Profile"
               className="h-12 w-10 rounded-full object-cover"
+              onClick={() => {localStorage.removeItem("user")}}
             />
           </div>
         </div>
