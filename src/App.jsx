@@ -23,10 +23,9 @@ import CoordinatorHome from './pages/coordinator/coordinator_home';
 import DeanStudents from './pages/dean/dean_students';
 import DeanReport from './pages/dean/dean_report';
 import DeanNavbar from './components/deanNavbar';
-import Mauna from './pages/student/mauna';
 
 function App() {
-  const [role, setRole] = useState('dean'); // Dynamically set this role (e.g., after login)
+  const [role, setRole] = useState('advisor'); // Dynamically set this role (e.g., after login)
 
   return (
     <Router>
