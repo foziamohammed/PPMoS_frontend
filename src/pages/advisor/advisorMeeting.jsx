@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 const AdvisorDashboard = () => {
   // Dummy data for UI testing
@@ -16,9 +17,18 @@ const AdvisorDashboard = () => {
       status: "pending",
     },
   ]);
+  const user = JSON.parse(localStorage.getItem("user"));
 
   // Handle Approve (UI only)
-  const handleApprove = (requestId) => {
+  const handleApprove = async (requestId) => {
+    try {
+        console.log("Approving...");
+        let response = await axios.put("http://localhost:8000/api/meetings/"+requestId+"/approve");
+        console.log("Response:", response.data);
+      } catch (error) {
+        console.error("Error fetching approved meetings:", error);
+      }
+
     setRequests((prevRequests) =>
       prevRequests.map((request) =>
         request._id === requestId ? { ...request, status: "approved" } : request
@@ -27,13 +37,57 @@ const AdvisorDashboard = () => {
   };
 
   // Handle Decline (UI only)
-  const handleDecline = (requestId) => {
+  const handleDecline = async (requestId) => {
+    try {
+        console.log("Approving...");
+        let response = await axios.put("http://localhost:8000/api/meetings/"+requestId+"/decline");
+        console.log("Response:", response.data);
+      } catch (error) {
+        console.error("Error fetching approved meetings:", error);
+      }
+
     setRequests((prevRequests) =>
       prevRequests.map((request) =>
         request._id === requestId ? { ...request, status: "declined" } : request
       )
     );
   };
+
+  useEffect(() => {
+    const fetchApprovedMeetings = async () => {
+      try {
+        let meetings = []
+        console.log("Fetching meetings...");
+        let response = await axios.get("http://localhost:8000/api/meetings/advisors/"+ user.id);
+        console.log("Meetings Response:", response.data.requests);
+
+        // Ensure the response is an array
+        if (Array.isArray(response.data.requests)) {
+          meetings = response.data.requests;
+        } else {
+          console.error("Unexpected API response format:", response.data);
+        }
+
+        console.log("Fetching meetings...");
+        response = await axios.get("http://localhost:8000/api/meetings/advisors/"+ user.id + "/schedules");
+        console.log("Meetings Response:", response.data.schedules);
+
+        // Ensure the response is an array
+        if (Array.isArray(response.data.schedules)) {
+          meetings = [...meetings, ...response.data.schedules]
+        } else {
+          console.error("Unexpected API response format:", response.data);
+        }
+
+        console.log(meetings)
+        setRequests(meetings);
+      } catch (error) {
+        console.error("Error fetching approved meetings:", error);
+      }
+    };
+
+    fetchApprovedMeetings();
+  }, []);
 
   return (
     <div className="p-8 font-sans">

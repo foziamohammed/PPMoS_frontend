@@ -14,17 +14,20 @@ const Meeting = () => {
   const [bookedMeetings, setBookedMeetings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const user = JSON.parse(localStorage.getItem("user"));
+  console.log("http://localhost:8000/api/meetings/students/"+ user.id +"/schedules")
 
   // Fetch approved meetings for the student
   useEffect(() => {
     const fetchApprovedMeetings = async () => {
       try {
         console.log("Fetching approved meetings...");
-        const response = await axios.get("http://localhost:5000/api/meetings/students/student123/schedules");
+        const response = await axios.get("http://localhost:8000/api/meetings/students/"+ user.id +"/schedules");
         console.log("Approved Meetings Response:", response.data);
 
         // Ensure the response is an array
         if (Array.isArray(response.data)) {
+          console.log(response.data)
           setBookedMeetings(response.data);
         } else {
           console.error("Unexpected API response format:", response.data);
@@ -56,9 +59,11 @@ const Meeting = () => {
     e.preventDefault();
 
     const meetingData = {
-      studentName: "John Doe",
-      studentId: "student123",
-      instructorId: formData.supervisor,
+      user: {
+        name: user.name || "estifanos",
+        id: user.id,
+      },
+      advisorId: formData.supervisor,
       dateTime: new Date(`${formData.date}T${formData.time}`).toISOString(),
       agenda: formData.agenda,
       place: formData.place,
@@ -66,7 +71,7 @@ const Meeting = () => {
 
     try {
       console.log("Sending meeting request...");
-      const response = await axios.post("http://localhost:5000/api/meetings/createmeeting", meetingData);
+      const response = await axios.post("http://localhost:8000/api/meetings/createmeeting", meetingData);
       console.log("Meeting request sent:", response.data);
       alert("Meeting request sent successfully!");
       setFormData({ supervisor: "", date: "", time: "", agenda: "", place: "" });
@@ -205,7 +210,7 @@ const Meeting = () => {
           <table className="w-full border-collapse">
             <thead>
               <tr className="border-b text-left">
-                <th className="py-2">Advisor Name</th>
+                <th className="py-2">Agenda</th>
                 <th className="py-2">Date</th>
                 <th className="py-2">Time</th>
                 <th className="py-2">Place</th>
@@ -214,7 +219,7 @@ const Meeting = () => {
             <tbody>
               {bookedMeetings.map((meeting, index) => (
                 <tr key={index} className="border-b">
-                  <td className="py-2">{meeting.instructorId}</td>
+                  <td className="py-2">{meeting.agenda}</td>
                   <td className="py-2">{new Date(meeting.dateTime).toLocaleDateString()}</td>
                   <td className="py-2">{new Date(meeting.dateTime).toLocaleTimeString()}</td>
                   <td className="py-2">{meeting.place}</td>

@@ -44,7 +44,7 @@ function App() {
           <Routes>
             {role === '' && (
               <>
-                <Route path="/" element={<SignIn setRole={setRole} />} />
+                <Route path="/" element={<SignIn setRoles={setRole} />} />
               </>
             )}
             

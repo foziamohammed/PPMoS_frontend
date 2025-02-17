@@ -1,23 +1,27 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
-export default function SignIn({setRole}) {
-  const [email, setEmail] = useState("");
+export default function SignIn({setRoles}) {
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
   const navigate = useNavigate()
-
 
   const handleSignIn = async (e) => {
     e.preventDefault();
     try {
         const response = await axios.post('http://localhost:8000/api/auth/login', {
-            email,
+            username,  
+            role,
             password
         });
 
-        setRole(response.data.user.role);
-        const userString = JSON.stringify(response.data.user);
+        const token = response.data.token;
+        const user = jwtDecode(token)
+        setRole(user.role);
+        const userString = JSON.stringify(user);
         localStorage.setItem('user', userString);
         navigate("/")
     } catch (error) {
@@ -31,13 +35,25 @@ export default function SignIn({setRole}) {
         <h2 className="text-2xl font-bold text-center mb-4">Welcome</h2>
         <form onSubmit={handleSignIn} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block font-medium mb-1">Email</label>
+            <label htmlFor="username" className="block font-medium mb-1">Username</label>
             <input
-              id="email"
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="username"
+              type="text"
+              placeholder="Enter your username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+            />
+          </div>
+          <div>
+            <label htmlFor="role" className="block font-medium mb-1">Role</label>
+            <input
+              id="role"
+              type="text"
+              placeholder="Enter your role"
+              value={role}
+              onChange={(e) => setRole(e.target.value)}
               required
               className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
             />
