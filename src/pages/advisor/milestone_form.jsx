@@ -1,12 +1,13 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 const AddMilestone = () => {
   const [formData, setFormData] = useState({
-    milestoneStage: "",
-    currentMilestone: "",
+    stage: "",
+    title: "",
     description: "",
     requirement: "",
-    deadline: "",
+    dueDate: "",
   });
 
   const handleChange = (e) => {
@@ -14,17 +15,40 @@ const AddMilestone = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("token"); // Get the token from localStorage
+      const response = await axios.post("http://localhost:5000/api/milestones/add", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the token in the request headers
+        },
+      });
+      console.log("Milestone added successfully:", response.data);
+      // Optionally, you can reset the form or show a success message
+      setFormData({
+        stage: "",
+        title: "",
+        description: "",
+        requirement: "",
+        dueDate: "",
+      });
+    } catch (error) {
+      console.error("Error adding milestone:", error.response ? error.response.data : error.message);
+    }
+  };
+
   return (
     <div className="space-y-6 p-6 max-w-md mx-auto bg-white shadow-md rounded-lg">
       <h2 className="text-xl font-bold text-blue-600">Add Milestone</h2>
 
-      <form className="space-y-4">
+      <form className="space-y-4" onSubmit={handleSubmit}>
         {/* Milestone Stage */}
         <div>
           <label className="block font-semibold text-gray-700">Milestone Stage</label>
           <select
-            name="milestoneStage"
-            value={formData.milestoneStage}
+            name="stage"
+            value={formData.stage}
             onChange={handleChange}
             className="w-full border p-2 rounded"
           >
@@ -41,13 +65,15 @@ const AddMilestone = () => {
           <label className="block font-semibold text-gray-700">Current Milestone</label>
           <input
             type="text"
-            name="currentMilestone"
-            value={formData.currentMilestone}
+            name="title"
+            value={formData.title}
             onChange={handleChange}
             placeholder="Enter current milestone"
             className="w-full border p-2 rounded"
           />
         </div>
+
+        {/* Description */}
         <div>
           <label className="block font-semibold text-gray-700">Description</label>
           <input
@@ -59,7 +85,6 @@ const AddMilestone = () => {
             className="w-full border p-2 rounded"
           />
         </div>
-
 
         {/* Requirement */}
         <div>
@@ -78,15 +103,15 @@ const AddMilestone = () => {
           <label className="block font-semibold text-gray-700">Deadline</label>
           <input
             type="date"
-            name="deadline"
-            value={formData.deadline}
+            name="dueDate"
+            value={formData.dueDate}
             onChange={handleChange}
             className="w-full border p-2 rounded"
           />
         </div>
 
         <button
-          type="button"
+          type="submit"
           className="bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700"
         >
           Submit Milestone

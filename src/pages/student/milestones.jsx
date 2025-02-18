@@ -1,9 +1,48 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
 const MilestoneProgress = () => {
-  const progress = 30; // Progress percentage
+  const [progress, setProgress] = useState(0);
+  const [currentMilestone, setCurrentMilestone] = useState({
+    stage: "",
+    title: "",
+    description: "",
+    requirement: "",
+    deadline: "",
+    status: "",
+  });
+
+  useEffect(() => {
+    // Fetch milestone data from the backend
+    const fetchMilestoneData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`http://localhost:5000/api/milestones/get`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const milestone = response.data.milestone;
+
+        setCurrentMilestone({
+          stage: milestone.stage,
+          title: milestone.title,
+          description: milestone.description,
+          requirement: milestone.requirement,
+          deadline: milestone.dueDate,
+          status: milestone.status,
+        });
+
+        setProgress(milestone.status === "completed" ? 100 : 50);
+      } catch (error) {
+        console.error("Error fetching milestone data:", error);
+      }
+    };
+
+    fetchMilestoneData();
+  }); // Re-fetch data when id changes
 
   return (
     <div className="flex h-screen p-8 bg-gray-100">
@@ -42,21 +81,21 @@ const MilestoneProgress = () => {
       <div className="w-1/2 mx-6 bg-white p-6 rounded-lg shadow-lg">
         <h2 className="text-2xl font-bold">Current Milestone</h2>
 
-        <h3 className="text-lg text-red-500 font-bold mt-4">Progress Presentation 1</h3>
+        <h3 className="text-lg text-red-500 font-bold mt-4">{currentMilestone.title}</h3>
         <p className="mt-2 text-gray-700">
-          <strong>Milestone Stage:</strong> Stage 2
+          <strong>Milestone Stage:</strong> {currentMilestone.stage}
         </p>
         <p className="mt-2 text-gray-700">
-          <strong>Description:</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          <strong>Description:</strong> {currentMilestone.description}
         </p>
         <p className="mt-2 text-gray-700">
-          <strong>Requirement:</strong> Lorem Ipsum dir
+          <strong>Requirement:</strong> {currentMilestone.requirement}
         </p>
         <p className="mt-2 text-gray-700">
-          <strong>Deadline:</strong> Nov - 29
+          <strong>Deadline:</strong> {new Date(currentMilestone.deadline).toLocaleDateString()}
         </p>
-        <p className="mt-2 text-yellow-500 font-semibold">
-          <strong>Status:</strong> Pending
+        <p className={`mt-2 font-semibold ${currentMilestone.status === "Pending" ? "text-yellow-500" : "text-green-500"}`}>
+          <strong>Status:</strong> {currentMilestone.status}
         </p>
       </div>
 

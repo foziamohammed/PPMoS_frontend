@@ -20,7 +20,7 @@ const SignInNavBar = () => {
 
           {/* Navigation Links */}
           <div className="hidden md:flex space-x-6">
-             <h1>AAiT's PhD Progress Monitoring</h1>
+             <h1><b>AAiT's PhD Progress Monitoring</b></h1>
             
           </div>
 

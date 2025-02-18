@@ -12,7 +12,7 @@ export default function SignIn({setRoles}) {
   const handleSignIn = async (e) => {
     e.preventDefault();
     try {
-        const response = await axios.post('http://localhost:8000/api/auth/login', {
+        const response = await axios.post('http://localhost:5000/api/auth/login', {
             username,  
             role,
             password
@@ -23,6 +23,7 @@ export default function SignIn({setRoles}) {
         setRole(user.role);
         const userString = JSON.stringify(user);
         localStorage.setItem('user', userString);
+        localStorage.setItem('token', token);
         navigate("/")
     } catch (error) {
         console.error('Error:', error.response ? error.response.data : error.message);
