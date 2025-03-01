@@ -1,8 +1,16 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import Logo from "../assets/images/aait.jpg"
+import { Link, useNavigate } from "react-router-dom";
+import Logo from "../assets/images/aait.jpg";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/");
+    window.location.reload();
+  };
+
   return (
     <nav className="bg-white shadow-md fixed w-full z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -32,7 +40,6 @@ const Navbar = () => {
             <Link to="/advisor/document" className="text-gray-700 hover:text-blue-600 text-xl">
               Document
             </Link>
-            
           </div>
 
           {/* Right Side: Search and Profile */}
@@ -48,7 +55,7 @@ const Navbar = () => {
               src="src/assets/images/placeholder.jpg"
               alt="Profile"
               className="h-16 w-16 rounded-full object-cover"
-              onClick={() => {localStorage.removeItem("user")}}
+              onClick={handleLogout}
             />
           </div>
         </div>

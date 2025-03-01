@@ -88,7 +88,6 @@ function App() {
                 <Route path="/dean/students" element={<DeanStudents />} />
                 <Route path="/coordinator/student_detail/:studentId" element={<StudentDetail />} />
                 <Route path="/dean/document" element={<DeanReport />} />
-               
               </>
             )}
           </Routes>

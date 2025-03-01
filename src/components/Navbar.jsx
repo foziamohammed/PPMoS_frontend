@@ -1,7 +1,17 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import Logo from "../assets/images/aait.jpg"
+import { Link, useNavigate } from "react-router-dom";
+import Logo from "../assets/images/aait.jpg";
+import PlaceholderImage from "../assets/images/placeholder.jpg"; // Ensure the path is correct
+
 const Navbar = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/");
+    window.location.reload();
+  };
+
   return (
     <nav className="bg-white shadow-md fixed w-full z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -10,7 +20,7 @@ const Navbar = () => {
           <div className="flex items-center">
             <Link to="/">
               <img
-                src="src/assets/images/aait.jpg"
+                src={Logo}
                 alt="AAiT Logo"
                 className="h-10 w-40"
               />
@@ -28,16 +38,12 @@ const Navbar = () => {
             <Link to="/meeting" className="text-gray-700 hover:text-blue-600">
               Meeting
             </Link>
-            <Link
-              to="/issues"
-              className="text-gray-700 hover:text-blue-600"
-            >
+            <Link to="/issues" className="text-gray-700 hover:text-blue-600">
               Issues and Support
             </Link>
             <Link to="/report" className="text-gray-700 hover:text-blue-600">
               Report
             </Link>
-            
           </div>
 
           {/* Right Side: Search and Profile */}
@@ -50,10 +56,10 @@ const Navbar = () => {
               />
             </div>
             <img
-              src="src/assets/images/placeholder.jpg"
+              src={PlaceholderImage}
               alt="Profile"
               className="h-12 w-10 rounded-full object-cover"
-              onClick={() => {localStorage.removeItem("user")}}
+              onClick={handleLogout}
             />
           </div>
         </div>
