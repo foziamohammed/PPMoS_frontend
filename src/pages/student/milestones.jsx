@@ -14,16 +14,42 @@ const MilestoneProgress = () => {
     status: "",
   });
 
+  const milestones = [
+    [
+      "Course completion",
+      "Identify Area of Research",
+      "Develop and Defend Research proposal",
+    ],
+    [
+      "Completion of Seminar work",
+      "Progress presentation 1",
+      "Prepare and draft preliminary publication",
+    ],
+    [
+      "Conduct advanced experiments",
+      "Generate results and prepare research paper",
+      "Progress presentation 2",
+    ],
+    [
+      "Prepare and submit PhD progress to SGC",
+      "Submit final dissertation",
+      "Defend the dissertation",
+    ],
+  ];
+
   useEffect(() => {
     // Fetch milestone data from the backend
     const fetchMilestoneData = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`http://localhost:5000/api/milestones/get`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(
+          `http://localhost:5000/api/milestones/get`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         const milestone = response.data.milestone;
 
         setCurrentMilestone({
@@ -48,40 +74,34 @@ const MilestoneProgress = () => {
     <div className="flex h-screen p-8 bg-gray-100">
       {/* Left Sidebar - Stages */}
       <div className="w-1/4 bg-white p-6 rounded-lg shadow-lg">
-        <h2 className="text-xl font-bold mb-4">Stage 1</h2>
-        <ul className="text-gray-700">
-          <li>Course completion</li>
-          <li>Identify Area of Research</li>
-          <li>Develop and Defend Research proposal</li>
-        </ul>
-
-        <h2 className="text-xl font-bold mt-6">Stage 2</h2>
-        <ul className="text-gray-700">
-          <li>Completion of Seminar work</li>
-          <li className="text-red-500 font-bold">Progress presentation 1</li>
-          <li className="text-gray-400">Prepare and draft preliminary publication</li>
-        </ul>
-
-        <h2 className="text-xl font-bold mt-6 text-gray-400">Stage 3</h2>
-        <ul className="text-gray-400">
-          <li>Conduct advanced experiments</li>
-          <li>Generate results and prepare research paper</li>
-          <li>Progress presentation 2</li>
-        </ul>
-
-        <h2 className="text-xl font-bold mt-6 text-gray-400">Stage 4</h2>
-        <ul className="text-gray-400">
-          <li>Prepare and submit PhD progress to SGC</li>
-          <li>Submit final dissertation</li>
-          <li>Defend the dissertation</li>
-        </ul>
+        {milestones.map((stage, index) => (
+          <div key={index}>
+            <h2 className="text-xl font-bold mb-2 mt-3">Stage {index + 1}</h2>
+            <ul className="text-gray-700">
+              {stage.map((item, inx) => (
+                <li
+                  className={
+                    item === currentMilestone.title
+                      ? "text-red-500 font-bold"
+                      : ' className="text-gray-300"'
+                  }
+                  key={inx}
+                >
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
 
       {/* Center - Current Milestone */}
       <div className="w-1/2 mx-6 bg-white p-6 rounded-lg shadow-lg">
         <h2 className="text-2xl font-bold">Current Milestone</h2>
 
-        <h3 className="text-lg text-red-500 font-bold mt-4">{currentMilestone.title}</h3>
+        <h3 className="text-lg text-red-500 font-bold mt-4">
+          {currentMilestone.title}
+        </h3>
         <p className="mt-2 text-gray-700">
           <strong>Milestone Stage:</strong> {currentMilestone.stage}
         </p>
@@ -92,9 +112,16 @@ const MilestoneProgress = () => {
           <strong>Requirement:</strong> {currentMilestone.requirement}
         </p>
         <p className="mt-2 text-gray-700">
-          <strong>Deadline:</strong> {new Date(currentMilestone.deadline).toLocaleDateString()}
+          <strong>Deadline:</strong>{" "}
+          {new Date(currentMilestone.deadline).toLocaleDateString()}
         </p>
-        <p className={`mt-2 font-semibold ${currentMilestone.status === "Pending" ? "text-yellow-500" : "text-green-500"}`}>
+        <p
+          className={`mt-2 font-semibold ${
+            currentMilestone.status === "Pending"
+              ? "text-yellow-500"
+              : "text-green-500"
+          }`}
+        >
           <strong>Status:</strong> {currentMilestone.status}
         </p>
       </div>
